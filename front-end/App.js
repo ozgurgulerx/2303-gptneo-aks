@@ -21,22 +21,29 @@ const App = () => {
   const generate = async (prompt) => {
 
 
-  const result = await axios.post('https://nlp-sentiment6.azurewebsites.net/sentimentAnalysis', {"text": prompt});
+  const result = await axios.post('http://20.90.140.241:8000/gptneo', {"text": prompt});
   console.log(JSON.stringify(result.data));
-  updateOutput(JSON.stringify(result.data));
-
+  updateOutput(JSON.stringify(result.data[0]['generated_text']));
+  
 };
   return (
     <ChakraProvider>
       <Container>
-        <Heading>Sentiment Analysis with ROBERTA</Heading>
+        <Heading>The frugal LLM - GPT-neo </Heading>
         <Text marginBottom={"10px"}>
-          This react application leverages the NLP model ROBERTA trained by
-          Hugging Face and generates weather sentiment within a text is positive
-          or negative.{" "}
+          This application uses LLM model GPT-neo with 2.7billion parameters from EleutherAI.{" "}
+          In terms of performance, GPT-3 is currently one of the most advanced language models available, {" "}
+          with over 175 billion parameters, while Neo-GPT has significantly fewer parameters, currently at around 2.7 billion.{" "} 
+          However, Neo-GPT has still demonstrated impressive language capabilities, especially given its smaller size."{" "}
+        </Text>
+        <Text marginBottom={"10px"}>
+          I don't have access to a GPU (yet!) {" "}
+          Please give it 30-40 seconds for the model to generate the text after pressing "Generate"...{" "}
+          Hope you will have fun...{" "}
         </Text>
         <Wrap marginBottom={"10px"}>
           <Input
+            bg="purple.100"
             value={prompt}
             onChange={(e) => updatePrompt(e.target.value)}
             width={"350px"}
@@ -46,7 +53,7 @@ const App = () => {
             Generate
           </Button>
           </Wrap>
-        <Box bg="purple.100">
+        <Box w='100%' d='50px' p='1' bg="pink.200"> 
         <Textarea value={output} />
         </Box>
 
