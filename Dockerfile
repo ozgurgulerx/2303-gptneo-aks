@@ -1,14 +1,15 @@
-# To enable ssh & remote debugging on app service change the base image to the one below
-# FROM mcr.microsoft.com/azure-functions/python:4-python3.8-appservice
-FROM mcr.microsoft.com/azure-functions/python:4-python3.8
+FROM python:3.9-slim-buster
 
-ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
-    AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+# Step 2: Update OS packages and install additional software
+RUN apt -y update
 
+# Step 3: Install additional dependencies (ML framework libraries and required python packages)
 COPY requirements.txt /
 RUN pip install -r /requirements.txt
 
-COPY ./nlp-app nlp-app
-WORKDIR /nlp-app
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker","--bind", "0.0.0.0:8000", "server:app"]
-EXPOSE 8000
+# STEP 4: Configure work directory
+COPY ./neo-gpt-app neo-gpt-app
+WORKDIR /neo-gpt-app
+
+# STEP 5: Serve the Model!
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker","--bind", "0.0.0.0:8000","--timeout", "500 ", "server:app"]
